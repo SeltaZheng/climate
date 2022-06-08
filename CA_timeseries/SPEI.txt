@@ -1,0 +1,8 @@
+cmd used to calculate SPEI using montly_prcp and monthly_pet:
+
+1. SPEI: monthly, 3-month, 6-month
+
+process_climate_indices --index spei --periodicity monthly --netcdf_precip monthly_prcp.nc --var_name_precip prcp --netcdf_pet monthly_pet.nc --var_name_pet pet --output_file_base SPEI_monthly --scales 1 3 6 --calibration_start_year 2010 --calibration_end_year 2018 --multiprocessing all
+
+2. SPI: monthly, 3-month, 6-month
+process_climate_indices --index spi --periodicity monthly --netcdf_precip monthly_prcp.nc --var_name_precip prcp --output_file_base SPI_monthly --scales 1 3 6 --calibration_start_year 2010 --calibration_end_year 2018 --multiprocessing all
