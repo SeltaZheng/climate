@@ -22,10 +22,13 @@ def manage_crs(xds, input_crs, output_crs="EPSG:32611"):
 
 
 # directory
-dir_in = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly'
-dir_out = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff'
+# dir_in = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly'
+# dir_out = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff'
+dir_in = r'F:\CA_TimeSeries\OtherData\Climate\daymet_monthly\1980-2018'
+# dir_out = r'F:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff\SPEI'
+dir_out = dir_in = r'F:\CA_TimeSeries\OtherData\Climate\daymet_monthly\1980-2018'
 # file names:
-f_ls = glob.glob(f'{dir_in}/*.nc')
+f_ls = glob.glob(f'{dir_in}/SPEI*.nc')
 
 # define the proper crs for the dataset:
 input_crs = '+proj=lcc +datum=WGS84 +lat_1=25 +lat_2=60 +lat_0=42.5 +lon_0=-100 +x_0=0 +y_0=0 +units=m +no_defs'
@@ -51,10 +54,8 @@ for f in f_ls:
                 del xds_UTM[var].attrs['grid_mapping']
             xds_UTM[var].rio.to_raster(f'{dir_out}/{var}.tif')
     else:
-        if 'spei' in key:
-            # if the file is calculated spei, rename the coords to y and x
-            ds = ds.rename({'lat': 'y', 'lon': 'x'})
 
+        ds = ds.rename({'lat': 'y', 'lon': 'x'})
         temp = ds[key].values
         temp = np.moveaxis(temp, -1, 0)
         ds[key] = (['time', 'y', 'x'], temp)
@@ -67,11 +68,15 @@ for f in f_ls:
 
 #%%--------------------- Get the date meta for the data, convert to .csv------------------
 # directory
-dir_in = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly'
-dir_out = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff'
-fn = 'monthly_prcp.nc'
+# dir_in = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly'
+# dir_out = r'D:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff'
+dir_in = r'F:\CA_TimeSeries\OtherData\Climate\daymet_monthly\1980-2018'
+dir_out = r'F:\CA_TimeSeries\OtherData\Climate\daymet_monthly\tiff\SPEI'
+# fn = 'monthly_prcp.nc'
+fn = 'SPEI_monthly_spei_gamma_03.nc'
 xds = xarray.open_dataset(f'{dir_in}/{fn}')
 dates = xds.time.data
 months = dates.astype('datetime64[M]')
 df = pd.DataFrame(data=months, columns=['Time'])
-df.to_csv(f'{dir_out}/daymet_meta.csv', index=False)
+# df.to_csv(f'{dir_out}/daymet_meta.csv', index=False)
+df.to_csv(f'{dir_out}/SPEI_meta.csv', index=False)
